@@ -26,13 +26,13 @@ Route::group([
     Route::post('logout', 'AuthController@logout');
 });
 
-Route::group(
-    [
-        'middleware' => 'api',
-        'namespace' => 'App\Http\Controllers',
-    ],
-    function ($router) {
-        Route::resource('todos', 'TodoController');
-    }
-);
+ //Route::group(
+//     [
+//         'middleware' => 'api',
+//         'namespace' => 'App\Http\Controllers',
+//     ],
+//     function ($router) {
+//         Route::resource('todos', 'TodoController');
+//     }
+// );
 
