@@ -33,14 +33,13 @@ class TodoController extends Controller
 
     public function store(Request $request)
     {
-        //
         $validator = Validator::make($request->all(), [
             'title' => 'required|string',
             'body' => 'required|string',
             'completed' => 'required|boolean'
         ]);
 
-        if ($validator)->fails()){
+        if (($validator)->fails()){
             return response()->json([
                 'status'=> false,
                 'errors'=> $validator->errors()
@@ -93,7 +92,7 @@ class TodoController extends Controller
             'completed' => 'required|boolean'
         ]);
 
-        if ($validator)->fails()){
+        if ($validator->fails()){
             return response()->json([
                 'status'=> false,
                 'errors'=> $validator->errors()
@@ -125,11 +124,6 @@ class TodoController extends Controller
      * @param  \App\Models\Todo  $todo
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Todo $todo)
-    {
-        //
-        
-    }
 
     protected function guard(){
         return Auth::guard();

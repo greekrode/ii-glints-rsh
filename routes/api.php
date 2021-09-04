@@ -19,12 +19,20 @@ Route::group([
     'namespace' => 'App\Http\Controllers',
     'prefix' => 'auth'
 ], function($router) {
-    Route::post('register', [AuthController::class,'register']);
-    Route::get('profile', [AuthController::class,'profile']);
-    Route::post('refresh', [AuthController::class,'refresh']);
-    Route::post('login', [AuthController::class,'login']);
-    Route::post('logout', [AuthController::class,'logout']);
+    Route::post('register', 'AuthController@register');
+    Route::get('profile', 'AuthController@profile');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::post('login', 'AuthController@login');
+    Route::post('logout', 'AuthController@logout');
 });
 
-
+Route::group(
+    [
+        'middleware' => 'api',
+        'namespace' => 'App\Http\Controllers',
+    ],
+    function ($router) {
+        Route::resource('todos', 'TodoController');
+    }
+);
 
