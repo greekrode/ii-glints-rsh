@@ -70,5 +70,11 @@ class TodoController extends Controller
         return $todo;
     }
 
+    protected function guard()
+    {
+        return Auth::guard();
+
+    }//end guard()
+
 }
 

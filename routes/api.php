@@ -34,6 +34,6 @@ Route::group(
        'namespace' => 'App\Http\Controllers',
     ],
     function($router){
-        Route::resource('tools','TodoController');
+        Route::resource('todos','TodoController');
     }
 );
