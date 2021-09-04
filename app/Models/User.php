@@ -6,17 +6,16 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Tymon\JWTAuth\Contracts\JWTSubjects;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasFactory, Notifiable;
 
     /**
      * The attributes that are mass assignable.
      *
-     * @var string[]
+     * @var array
      */
     protected $fillable = [
         'name',
@@ -25,7 +24,7 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     /**
-     * The attributes that should be hidden for serialization.
+     * The attributes that should be hidden for arrays.
      *
      * @var array
      */
@@ -35,23 +34,24 @@ class User extends Authenticatable implements JWTSubject
     ];
 
     /**
-     * The attributes that should be cast.
+     * The attributes that should be cast to native types.
      *
      * @var array
      */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-}
+    protected $casts = ['email_verified_at' => 'datetime'];
 
-public function getJWTIdentifier(){
-    return $this->getKey();
-}
 
-public function getJWTCustomClaims(){
-    return [];
-}
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
 
-public function todos(){
-    return $this->hasMany(Todo:class, 'created_by', 'id');
-}
+    }//end getJWTIdentifier()
+
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+
+    }//end getJWTCustomClaims()
+
+}//end class 
