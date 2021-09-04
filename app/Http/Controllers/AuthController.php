@@ -13,7 +13,7 @@ class AuthController extends Controller
 
     public function __construct()
     {
-        $this->middleware('auth:api', ['except' => ['login']]);
+        $this->middleware('auth:api', ['except' => ['login', 'register']]);
 
     }//end __construct()
 
@@ -43,6 +43,35 @@ class AuthController extends Controller
         return $this->respondWithToken($token);
 
     }//end login()
+
+    public function register(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'name'     => 'required|string|between:2,100',
+                'email'    => 'required|email|unique:users',
+                'password' => 'required|string|min:6',
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(
+                [$validator->errors()],
+                422
+            );
+        }
+
+        $user = User::create(
+            array_merge(
+                $validator->validated(),
+                ['password' => bcrypt($request->password)]
+            )
+        );
+
+        return response()->json(['message' => 'User created successfully', 'user' => $user]);
+
+    }//end register()
 
     public function logout()
     {
