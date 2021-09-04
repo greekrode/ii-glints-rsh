@@ -54,4 +54,8 @@ class User extends Authenticatable implements JWTSubject
 
     }//end getJWTCustomClaims()
 
+    public function todos(){
+        return $this->hasMany(Todo::class, 'created_by', 'id');
+    }
+
 }//end class 
