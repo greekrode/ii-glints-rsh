@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\ResetPassController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -39,3 +40,5 @@ Route::group(
 );
     
 
+Route::post('forgot',[ResetPassController::class,'forgotPassword']);
+Route::post('resetpass',[ResetPassController::class,'reset']);
