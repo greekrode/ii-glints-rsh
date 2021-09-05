@@ -26,7 +26,19 @@ Route::group(
         Route::post('logout', 'AuthController@logout');
         Route::post('register', 'AuthController@register');
     }
+
 );
+
+Route::group(
+    [
+        'middleware' => 'api',
+        'namespace'  => 'App\Http\Controllers',
+    ],
+    function ($router) {
+        Route::resource('todos', 'TodoController');
+    }
+);
+    
 
 Route::post('forgot',[ResetPassController::class,'forgotPassword']);
 Route::post('resetpass',[ResetPassController::class,'reset']);
