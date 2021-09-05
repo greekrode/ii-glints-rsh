@@ -25,5 +25,17 @@ Route::group(
         Route::post('logout', 'AuthController@logout');
         Route::post('register', 'AuthController@register');
     }
+
 );
+
+Route::group(
+    [
+        'middleware' => 'api',
+        'namespace'  => 'App\Http\Controllers',
+    ],
+    function ($router) {
+        Route::resource('todos', 'TodoController');
+    }
+);
+    
 
