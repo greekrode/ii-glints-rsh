@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\ResetPassController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\MultipleUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -39,6 +40,8 @@ Route::group(
     }
 );
     
+
+Route::post('multiple-image-upload', [MultipleUploadController::class, 'upload']);
 
 Route::post('forgot',[ResetPassController::class,'forgotPassword']);
 Route::post('resetpass',[ResetPassController::class,'reset']);

@@ -18,30 +18,61 @@ class TodoController extends Controller
         $this->middleware('auth:api');
         $this->user = $this->guard()->user();
 
-    }//end __construct()
+    }
 
-
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
     public function index()
     {
-        $todos = $this->user->todos()->get(['id', 'title', 'body', 'completed', 'created_by']);
+        $todos = $this->user->todos()->get(['id','title','body','completed','created_by']);
         return response()->json($todos->toArray());
-
-    }//end index()
-
-
-    /**
+    }
+/**
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request $request
      * @return \Illuminate\Http\Response
      */
+    public function store(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'title' => 'required|string',
+                'body' => 'required|string',
+                'completed' => 'required|boolean',
+            ]
+        );
 
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    'status' => false,
+                    'errors' => $validator->errors(),
+                ],
+                400
+            );
 
+        }
+
+        $todo = new Todo();
+        $todo->title = $request->title;
+        $todo->body = $request->body;
+        $todo->completed = $request->completed;
+
+        if ($this->user->todos()->save($todo)) {
+            return response()->json(
+                [
+                    'status' => true,
+                    'todo'   => $todo,
+                ]
+            );
+        } else {
+            return response()->json(
+                [
+                    'status'  => false,
+                    'message' => 'Oops, this to do list could not be saved.',
+                ]);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
@@ -49,6 +80,7 @@ class TodoController extends Controller
      * @param  \App\Models\Todo $todo
      * @return \Illuminate\Http\Response
      */
+
     public function destroy(Todo $todo)
     {
         if ($todo->delete()) {
@@ -64,11 +96,13 @@ class TodoController extends Controller
                     'status'  => false,
                     'message' => 'Oops, the todo could not be deleted.',
                 ]
-            );
+                );
         }
 
     }//end destroy()
-
+    public function show(Todo $todo){
+        return $todo;
+    }
 
     protected function guard()
     {
