@@ -36,9 +36,12 @@ Route::group(
     ],
     function ($router) {
         Route::resource('todos', 'TodoController');
+        Route::resource('getusers','UserController');
     }
 );
     
 
 Route::post('forgot',[ResetPassController::class,'forgotPassword']);
 Route::post('resetpass',[ResetPassController::class,'reset']);
+
+
