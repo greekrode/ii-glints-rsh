@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Laravel\Sanctum\HasApiTokens;
+use App\Notifications\ResetPasswordNotification;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,7 +12,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasApiTokens;
 
     /**
      * The attributes that are mass assignable.
@@ -54,8 +56,19 @@ class User extends Authenticatable implements JWTSubject
 
     }//end getJWTCustomClaims()
 
-    public function todos(){
+  
+    public function todos()
+    {
         return $this->hasMany(Todo::class, 'created_by', 'id');
+
+    }//end todos()
+  
+  
+    public function sendPasswordResetNotification($token)
+    {
+        $url = 'https://spa.test/reset-password?token=' . $token;
+
+        $this->notify(new ResetPasswordNotification($url));
     }
 
 }//end class 
