@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\MultipleUploadController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,3 +38,6 @@ Route::group(
         Route::resource('todos','TodoController');
     }
 );
+
+Route::post('multiple-image-upload', [MultipleUploadController::class, 'upload']);
+
