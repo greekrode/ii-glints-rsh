@@ -25,7 +25,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $user = User::all();
+        return $user->toJson();
     }
 
     /**
