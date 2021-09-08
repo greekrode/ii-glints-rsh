@@ -38,8 +38,8 @@ Route::group(
         'namespace'  => 'App\Http\Controllers',
     ],
     function ($router) {
-        
-        Route::resource('todos', TodoController::class);
+        Route::resource('todos', 'TodoController');
+        Route::resource('images','FileController');
     }
 );
    
@@ -51,10 +51,7 @@ Route::group(
         Route::resource('getusers',UserController::class);
     }
 );
-
 // Route::resource('getusers',UserController::class);
-
-Route::post('multiple-image-upload', [MultipleUploadController::class, 'upload']);
 
 Route::post('forgot',[ResetPassController::class,'forgotPassword']);
 Route::post('resetpass',[ResetPassController::class,'reset']);

@@ -2,27 +2,31 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Image;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\FileController;
 
 class TodoController extends Controller
 {
 
     protected $user;
+    protected $FileController;
 
 
-    public function __construct()
+    public function __construct(FileController $filecontroller)
     {
         $this->middleware('auth:api');
         $this->user = $this->guard()->user();
+        $this->FileController = $filecontroller;
 
     }
 
     public function index()
     {
-        $todos = $this->user->todos()->get(['id','title','body','completed','created_by']);
+        $todos = $this->user->Todos()->get(['id','title','body','completed','created_by']);
         return response()->json($todos->toArray());
     }
 /**
@@ -58,7 +62,11 @@ class TodoController extends Controller
         $todo->body = $request->body;
         $todo->completed = $request->completed;
 
-        if ($this->user->todos()->save($todo)) {
+
+        if ($this->user->todos()->save($todo)) {  
+            if ($request->image != null) {
+                $this->FileController->store($request, $todo->id);
+            }
             return response()->json(
                 [
                     'status' => true,
@@ -73,6 +81,7 @@ class TodoController extends Controller
                 ]);
         }
     }
+
 
     /**
      * Remove the specified resource from storage.
@@ -100,10 +109,11 @@ class TodoController extends Controller
         }
 
     }//end destroy()
+
     public function show(Todo $todo){
         return $todo;
     }
-
+    
     protected function guard()
     {
         return Auth::guard();
