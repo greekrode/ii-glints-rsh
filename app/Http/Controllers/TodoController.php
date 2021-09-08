@@ -110,7 +110,10 @@ class TodoController extends Controller
 
     }//end destroy()
 
-
+    public function show(Todo $todo){
+        return $todo;
+    }
+    
     protected function guard()
     {
         return Auth::guard();
