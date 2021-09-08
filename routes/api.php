@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\TodoController;
 use App\Http\Controllers\Api\ResetPassController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\MultipleUploadController;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -37,14 +39,19 @@ Route::group(
     ],
     function ($router) {
         Route::resource('todos', 'TodoController');
-        Route::resource('getusers','UserController');
+        Route::resource('images','FileController');
     }
 );
-    
-
-Route::post('multiple-image-upload', [MultipleUploadController::class, 'upload']);
+   
+Route::group(
+    [
+        'middleware' => 'admin',
+    ],
+    function ($router) {      
+        Route::resource('getusers',UserController::class);
+    }
+);
+// Route::resource('getusers',UserController::class);
 
 Route::post('forgot',[ResetPassController::class,'forgotPassword']);
 Route::post('resetpass',[ResetPassController::class,'reset']);
-
-
