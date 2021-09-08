@@ -40,7 +40,7 @@ class User extends Authenticatable implements JWTSubject
      *
      * @var array
      */
-    protected $casts = ['email_verified_at' => 'datetime'];
+    protected $casts = ['email_verified_at' => 'datetime','is_admin' => 'boolean'];
 
 
     public function getJWTIdentifier()
