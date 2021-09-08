@@ -82,7 +82,6 @@ class TodoController extends Controller
         }
     }
 
-
     public function update(Request $request, $id)
     {
         if (Todo::where('id','=',$id)->first()) {
