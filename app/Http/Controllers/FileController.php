@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Models\Image;
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class FileController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +14,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        $user = User::all();
-        return $user->toJson();
+        //
     }
 
     /**
@@ -25,8 +24,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        $user = User::all();
-        return $user->toJson();
+        //
     }
 
     /**
@@ -35,31 +33,20 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request,$todoid)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $imgname = $request->file('image')->getClientOriginalName();
+        $path = $request->file('image')->store('public/images');
+        $save = new Image();
+        $save->title = $imgname;
+        $save->path = $path;
+        $save->todo_id = $todoid;
+        $save->save();
+        return response()->json(
+            [
+                'Photo successfully added!',
+            ]
+            );
     }
 
     /**
