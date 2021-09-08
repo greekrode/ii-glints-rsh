@@ -82,6 +82,48 @@ class TodoController extends Controller
         }
     }
 
+    public function update(Request $request, $id)
+    {
+        if (Todo::where('id','=',$id)->first()) {
+            $todo = Todo::find($id);
+            if ($request->title == null) {
+                $title = $todo->title;
+            }
+            else{
+                $title = $request->title;
+            }
+            if ($request->body == null) {
+                $body = $todo->body;
+            }
+            else{
+                $body = $request->body;
+            }
+            if ($request->completed == null) {
+                $completed = $todo->completed;
+            }
+            else{
+                $completed = $request->completed;
+            }
+            $todo->update([
+            'title'=>$title,
+            'body'=>$body,
+            'completed'=>$completed,
+            ]);
+            $todo = Todo::find($id);
+            if ($request->image != null) {
+                $this->FileController->store($request, $id);
+            }
+            return $todo->toJson();
+        }
+        else {
+            return response()->json(
+                [
+                    'Message' => 'Data Tidak Ditemukan'
+                ],
+                404
+            );
+        }
+    }
 
     /**
      * Remove the specified resource from storage.
