@@ -65,12 +65,16 @@ class TodoController extends Controller
 
         if ($this->user->todos()->save($todo)) {  
             if ($request->image != null) {
-                $this->FileController->store($request, $todo->id);
+                $image = $this->FileController->store($request, $todo->id);
+            }
+            else {
+                $image = Image::with('todo')->where('todo_id',$todo->id);
             }
             return response()->json(
                 [
                     'status' => true,
                     'todo'   => $todo,
+                    'image'  => $image,
                 ]
             );
         } else {
@@ -111,17 +115,25 @@ class TodoController extends Controller
             ]);
             $todo = Todo::find($id);
             if ($request->image != null) {
-                $this->FileController->store($request, $id);
+                $image =$this->FileController->store($request, $id);
             }
-            return $todo->toJson();
+            else {
+                $image = Image::where('todo_id', $id)->first();
+            }
+            return response()->json(
+                [
+                    'status' => true,
+                    'todo'   => $todo,
+                    'images' => $image
+                ]
+            );
         }
         else {
             return response()->json(
                 [
-                    'Message' => 'Data Tidak Ditemukan'
-                ],
-                404
-            );
+                    'status'  => false,
+                    'message' => 'Oops, this to do list could not be update.',
+                ]);
         }
     }
 
@@ -152,10 +164,9 @@ class TodoController extends Controller
 
     }//end destroy()
 
-    public function show(Todo $todo){
-        return $todo;
+    public function show($created_by){
+        return Todo::where('created_by','=',$created_by);
     }
-    
     protected function guard()
     {
         return Auth::guard();

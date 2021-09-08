@@ -42,11 +42,8 @@ class FileController extends Controller
         $save->path = $path;
         $save->todo_id = $todoid;
         $save->save();
-        return response()->json(
-            [
-                'Photo successfully added!',
-            ]
-            );
+        $img = Image::find($save->id);
+        return $img;
     }
 
     /**
