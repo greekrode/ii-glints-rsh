@@ -19,8 +19,8 @@ class CreateTodosTable extends Migration
             $table->text('body');
             $table->boolean('completed')->default(false);
             $table->unsignedBigInteger('created_by');
-            $table->string('img_url');
-            $table->string('img_title');
+            $table->string('img_url')->nullable();
+            $table->string('img_title')->nullable();
             $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
 
