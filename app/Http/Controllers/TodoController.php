@@ -2,25 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Image;
 use App\Models\Todo;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
-use App\Http\Controllers\FileController;
 
 class TodoController extends Controller
 {
 
     protected $user;
-    protected $FileController;
 
 
-    public function __construct(FileController $filecontroller)
+    public function __construct()
     {
         $this->middleware('auth:api');
         $this->user = $this->guard()->user();
-        $this->FileController = $filecontroller;
 
     }
 
@@ -56,25 +52,30 @@ class TodoController extends Controller
             );
 
         }
-
-        $todo = new Todo();
-        $todo->title = $request->title;
-        $todo->body = $request->body;
-        $todo->completed = $request->completed;
-
+        if ($request->image != null) {
+            $imgname = $request->file('image')->getClientOriginalName();
+            $path = $request->file('image')->store('public/images');
+            $todo = new Todo();
+            $todo->title = $request->title;
+            $todo->body = $request->body;
+            $todo->completed = $request->completed;
+            $todo->img_title = $imgname;
+            $todo->img_url = $path;
+        }
+        else {
+            $todo = new Todo();
+            $todo->title = $request->title;
+            $todo->body = $request->body;
+            $todo->completed = $request->completed;
+            $todo->img_title = null;
+            $todo->img_url = null;
+        }
 
         if ($this->user->todos()->save($todo)) {  
-            if ($request->image != null) {
-                $image = $this->FileController->store($request, $todo->id);
-            }
-            else {
-                $image = Image::with('todo')->where('todo_id',$todo->id);
-            }
             return response()->json(
                 [
                     'status' => true,
                     'todo'   => $todo,
-                    'image'  => $image,
                 ]
             );
         } else {
@@ -82,7 +83,7 @@ class TodoController extends Controller
                 [
                     'status'  => false,
                     'message' => 'Oops, this to do list could not be saved.',
-                ]);
+                ],400);
         }
     }
 
@@ -109,23 +110,32 @@ class TodoController extends Controller
             else{
                 $completed = $request->completed;
             }
-            $todo->update([
-            'title'=>$title,
-            'body'=>$body,
-            'completed'=>$completed,
-            ]);
-            $todo = Todo::find($id);
             if ($request->image != null) {
-                $image =$this->FileController->store($request, $id);
+                $imgname = $request->file('image')->getClientOriginalName();
+                $path = $request->file('image')->store('public/images');
+                $todo->update([
+                    'title'=>$title,
+                    'body'=>$body,
+                    'completed'=>$completed,
+                    'img_title'=>$imgname,
+                    'img_url'=>$path,
+                    ]);
             }
             else {
-                $image = Image::where('todo_id', $id)->first();
+                $todo->update([
+                    'title'=>$title,
+                    'body'=>$body,
+                    'completed'=>$completed,
+                    'img_title'=>$todo->img_title,
+                    'img_url'=>$todo->img_url,
+                    ]);
             }
+            $todo = Todo::find($id);
+
             return response()->json(
                 [
                     'status' => true,
                     'todo'   => $todo,
-                    'images' => $image
                 ]
             );
         }
@@ -134,7 +144,8 @@ class TodoController extends Controller
                 [
                     'status'  => false,
                     'message' => 'Oops, this to do list could not be update.',
-                ]);
+                     ],400);
+                
         }
     }
 
@@ -159,7 +170,7 @@ class TodoController extends Controller
                 [
                     'status'  => false,
                     'message' => 'Oops, the todo could not be deleted.',
-                ]
+                ],400
                 );
         }
 
