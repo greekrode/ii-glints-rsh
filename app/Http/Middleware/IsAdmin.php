@@ -20,6 +20,12 @@ class IsAdmin
          if (Auth::user() &&  Auth::user()->is_admin == 1) {
                 return $next($request);
          }
+         else {
+            return response()->json(
+                [
+                    'message' => "You're not Authorized",
+                        ],401);
+         }
     
         return redirect('/');
     }

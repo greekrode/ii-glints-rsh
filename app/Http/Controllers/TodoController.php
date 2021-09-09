@@ -22,7 +22,14 @@ class TodoController extends Controller
 
     public function index()
     {
-        $todos = $this->user->Todos()->get(['id','title','body','completed','created_by']);
+        $todos = $this->user->Todos()->get();
+        if (count($todos)==0) {
+            return response()->json(
+                [
+                    'status'  => false,
+                    'message' => 'Oops, you have no todo lists',
+                ]);
+        }
         return response()->json($todos->toArray());
     }
 /**
@@ -142,7 +149,7 @@ class TodoController extends Controller
             return response()->json(
                 [
                     'status'  => false,
-                    'message' => 'Oops, this to do list could not be update.',
+                    'message' => 'Oops, this to do list could not be updated.',
                      ],400);
                 
         }
